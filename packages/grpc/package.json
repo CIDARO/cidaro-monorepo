@@ -1,0 +1,23 @@
+{
+  "name": "@cidaro/grpc",
+  "version": "1.0.0",
+  "description": "gRPC package of the CIDARO monorepo.",
+  "main": "index.js",
+  "scripts": {
+    "build": "npm run clean && npm run compile",
+    "clean": "rimraf -rf ./dist",
+    "compile": "tsc -p tsconfig.build.json",
+    "prepublishOnly": "npm run build"
+  },
+  "author": "Paolo Rollo",
+  "license": "MIT",
+  "devDependencies": {
+    "rimraf": "^3.0.2",
+    "typescript": "^3.9.5"
+  },
+  "dependencies": {
+    "@grpc/proto-loader": "^0.5.4",
+    "grpc": "^1.24.3",
+    "grpc-promisify": "^0.1.0"
+  }
+}
