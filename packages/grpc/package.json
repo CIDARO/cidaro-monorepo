@@ -19,5 +19,6 @@
     "@grpc/proto-loader": "^0.5.4",
     "grpc": "^1.24.3",
     "grpc-promisify": "^0.1.0"
-  }
+  },
+  "gitHead": "155c3ed3c05984c7d98dcc410fd162e82cdf02b0"
 }

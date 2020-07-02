@@ -1,6 +1,6 @@
 {
-  "name": "root",
-  "private": true,
+  "name": "@cidaro/monorepo",
+  "private": false,
   "scripts": {
     "bootstrap": "lerna bootstrap --hoist",
     "postinstall": "npm run bootstrap",

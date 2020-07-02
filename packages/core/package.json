@@ -21,5 +21,6 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "grpc": "^1.24.3"
-  }
+  },
+  "gitHead": "155c3ed3c05984c7d98dcc410fd162e82cdf02b0"
 }

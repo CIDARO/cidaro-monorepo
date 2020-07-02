@@ -24,5 +24,6 @@
     "grpc": "^1.24.3",
     "winston": "^3.3.3",
     "winston-daily-rotate-file": "^4.5.0"
-  }
+  },
+  "gitHead": "155c3ed3c05984c7d98dcc410fd162e82cdf02b0"
 }
