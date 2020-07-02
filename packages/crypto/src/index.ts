@@ -1,7 +1,7 @@
 import * as rlp from 'rlp';
 import * as createKeccakHash from 'keccak';
+import * as ethUtil from 'ethjs-util'
 import { sha256 as _sha256 } from './lib';
-import { CidaroUtils } from '@cidaro/utils';
 
 export namespace CidaroCrypto {
     /**
@@ -37,7 +37,7 @@ export namespace CidaroCrypto {
      * @param bits keccak width (default 256)
      */
     export function hexStringToKeccak(str: string, bits: number = 256): Buffer {
-        return this.keccak(CidaroUtils.toBuffer(str), bits);
+        return this.keccak(toBuffer(str), bits);
     }
 
     /**
@@ -46,7 +46,7 @@ export namespace CidaroCrypto {
      * @param bits keccak width (default 256)
      */
     export function arrayToKeccak(arr: number[], bits: number = 256): Buffer {
-        return this.keccak(CidaroUtils.toBuffer(arr), bits);
+        return this.keccak(toBuffer(arr), bits);
     }
 
     /**
@@ -62,7 +62,7 @@ export namespace CidaroCrypto {
      * @param str string to hash
      */
     export function stringToSha256(str: string): Buffer {
-        return _sha256(CidaroUtils.toBuffer(str));
+        return _sha256(toBuffer(str));
     }
 
     /**
@@ -70,7 +70,7 @@ export namespace CidaroCrypto {
      * @param arr array to hash
      */
     export function arrayToSha256(arr: number[]): Buffer {
-        return _sha256(CidaroUtils.toBuffer(arr));
+        return _sha256(toBuffer(arr));
     }
 
     /**
@@ -79,5 +79,25 @@ export namespace CidaroCrypto {
      */
     export function rlpHash(value: rlp.Input): Buffer {
         return this.keccak(rlp.encode(value));
+    }
+
+    
+    /**
+     * Converts the input value into a Buffer.
+     * @param value value to convert to a Buffer
+     */
+    export function toBuffer(value: any): Buffer {
+        if (Buffer.isBuffer(value)) return value;
+        if (Array.isArray(value) || value instanceof Uint8Array) return Buffer.from(value);
+        if (typeof value === 'string') {
+            if (ethUtil.isHexString(value)) return Buffer.from(ethUtil.padToEven(ethUtil.stripHexPrefix(value)), 'hex');
+        } else if (typeof value === 'number') {
+            return ethUtil.intToBuffer(value);
+        } else if (value === null || value === undefined) {
+            return Buffer.allocUnsafe(0);
+        } else if (value.toArray) {
+            return Buffer.from(value.toArray());
+        }
+        throw new Error('invalid type for buffer conversion')
     }
 }

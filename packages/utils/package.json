@@ -3,6 +3,7 @@
   "version": "1.0.1-alpha.0",
   "description": "Utils package of the CIDARO monorepo.",
   "main": "index.js",
+  "private": false,
   "scripts": {
     "build": "npm run clean && npm run compile",
     "clean": "rimraf -rf ./dist",
