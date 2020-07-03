@@ -1,20 +1,21 @@
 import * as express from 'express';
 import * as cors from 'cors';
-import { Route } from './lib';
+import { Route, Router } from './lib';
 
 export namespace CidaroCore {
     /**
      * Performs the basic setup of an express application by disabling 'etag'/'x-powered-by' headers,
      * by adding JSON and URLEncoded middleware and by adding the '/ping' heartbeat route.
      * Also it adds any cors options to the express application.
-     * @param app express application
      * @param corsOptions cors options object 
      * @param jsonLimit limit for json body as string (default '1mb')
      * @param urlencodedLimit limit for urlencoded body as string (default '1mb')
      * @param extended bool true/false
      * @param auth bool true/false if the app uses the auth middleware on all requests
+     * @param staticDir path for the static dir - if provided it gets mounted on the application
      */
-    export function setupExpressApp(app: express.Application, corsOptions: cors.CorsOptions, jsonLimit: string = '1mb', urlencodedLimit: string = '1mb', extended: boolean = true, auth: boolean = true): express.Application {
+    export function setupExpressApp(corsOptions: cors.CorsOptions, jsonLimit: string = '1mb', urlencodedLimit: string = '1mb', extended: boolean = true, auth: boolean = true, staticDir?: string): express.Application {
+        const app = express();
         // Implement the cors options
         app.use(cors(corsOptions));
         // Disable etag and x-powered-by for performance purposes
@@ -26,6 +27,8 @@ export namespace CidaroCore {
         app.get('/ping', async (req, res) => res.status(200).send('pong'));
         // Check if auth must be used on all requests
         if (auth) app.use(authMiddleware);
+        // Check if static dir is provided
+        if (staticDir) app.use(express.static(staticDir));
         // Return the application
         return app;
     }
@@ -69,7 +72,20 @@ export namespace CidaroCore {
                 default:
                     router.all(handler, middlewares, routeFunc);
             }
-        })
+        });
         return router;
+    }
+    
+    /**
+     * Registers an array of Routers in an already existing express application.
+     * @param app express application where the routers will be mounted to
+     * @param routers array of {@link Router} to mount on the express application
+     */
+    export function registerRouters(app: express.Application, routers: Router[]): express.Application {
+        routers.forEach((r) => {
+            const { handler, router } = r;
+            app.use(handler, router);
+        })
+        return app;
     }
 }

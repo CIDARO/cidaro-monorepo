@@ -1,0 +1,26 @@
+{
+  "name": "@cidaro/web3",
+  "version": "1.0.1-alpha.0",
+  "description": "Web3 package of the CIDARO monorepo.",
+  "main": "index.js",
+  "private": false,
+  "scripts": {
+    "build": "npm run clean && npm run compile",
+    "clean": "rimraf -rf ./dist",
+    "compile": "tsc -p tsconfig.build.json",
+    "prepublishOnly": "npm run build"
+  },
+  "author": "Paolo Rollo",
+  "license": "MIT",
+  "devDependencies": {
+    "rimraf": "^3.0.2",
+    "typescript": "^3.9.5"
+  },
+  "dependencies": {
+    "@grpc/proto-loader": "^0.5.4",
+    "@openzeppelin/network": "^0.4.2",
+    "grpc": "^1.24.3",
+    "grpc-promisify": "^0.1.0"
+  },
+  "gitHead": "155c3ed3c05984c7d98dcc410fd162e82cdf02b0"
+}

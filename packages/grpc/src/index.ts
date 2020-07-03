@@ -14,7 +14,7 @@ export namespace CidaroGrpc {
      */
     export function createClient(protoPath: string, packageName: string, serviceName: string, serviceHost: string, sslCredentials?: GrpcCredentials): grpc.GrpcObject {
         const Service = loadService(protoPath, packageName, serviceName);
-        const { rootCerts, privateKey, certChain, verifyOptions } = sslCredentials;
+        const { rootCerts, privateKey, certChain, verifyOptions } = sslCredentials || { rootCerts: null, privateKey: null, certChain: null, verifyOptions: null };
         const client = new Service(serviceHost, sslCredentials ? grpc.credentials.createSsl(rootCerts, privateKey, certChain, verifyOptions) : grpc.credentials.createInsecure());
         grpc_promise.promisify_all(client);
         return client;
@@ -37,7 +37,7 @@ export namespace CidaroGrpc {
             })
             server.addService(loadService(protoPath, packageName, serviceName), methodsObject);
         });
-        const { rootCerts, privateKey, certChain, verifyOptions } = sslCredentials;
+        const { rootCerts, privateKey, certChain, verifyOptions } = sslCredentials || { rootCerts: null, privateKey: null, certChain: null, verifyOptions: null };
         server.bind(`0.0.0.0:${port}`, sslCredentials ? grpc.credentials.createSsl(rootCerts, privateKey, certChain, verifyOptions) : grpc.credentials.createInsecure());
         return server;
     }
@@ -47,14 +47,16 @@ export namespace CidaroGrpc {
      * @param protoPath path where the .proto file is stored
      * @param packageName name of the package
      * @param serviceName name of the service
+     * @param longsAsNum true/false whether the longs must be treated as Numbers (default is String)
+     * @param enumsAsNum true/false whether the enums must be treated as Numbers (default is String)
      */
-    function loadService(protoPath: string, packageName: string, serviceName: string): any {
+    function loadService(protoPath: string, packageName: string, serviceName: string, longsAsNum?: boolean, enumsAsNum?: boolean): any {
         const packageDefinition = protoLoader.loadSync(
             protoPath,
             {
                 keepCase: true,
-                longs: String,
-                enums: String,
+                longs: longsAsNum ? Number : String,
+                enums: enumsAsNum ? Number : String,
                 defaults: true,
                 oneofs: true
             },
